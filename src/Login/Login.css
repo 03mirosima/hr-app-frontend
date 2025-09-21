@@ -37,8 +37,8 @@
   font-weight: bold;
 }
 .login-button{
-      border-radius: 20px;
-    background: #787878;
-    color: white;
-    border-color: #787878;
+      border-radius: 20px!important;
+    background: #787878!important;
+    color: white!important;
+    border-color: #787878!important;
 }

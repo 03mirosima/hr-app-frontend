@@ -7,26 +7,39 @@ import {
   Paper,
   TextField,
   ThemeProvider,
-  Typography
+  Typography,
 } from "@mui/material";
+import axiosReceptor from "../services/AxiosReceptor";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+  const [form, setForm] = useState({ username: "", password: "" });
+  const navigate = useNavigate();
   const theme = createTheme({
     typography: {
       h1: {
         fontSize: "2em",
         fontWeight: "bold",
-        color:"#787878"
+        color: "#787878",
       },
       h2: {
         fontSize: "1em",
         fontWeight: "bold",
       },
-       button: {
-      textTransform: 'none'
-    }
+      button: {
+        textTransform: "none",
+      },
     },
   });
+  const handleLogin = async () => {
+    /*  const response = await axiosReceptor.post("/authenticate", form);
+    localStorage.setItem("accessToken", response.data.token); */
+    navigate("/a");
+  };
+  const onFormChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container className="login-container">
@@ -34,21 +47,31 @@ const Login = () => {
           <Grid size={6} className="grid">
             <Typography variant="h1">Giriş Yap</Typography>
             <TextField
+              name="username"
               label="Kullanıcı Adı"
               placeholder="Enter username"
               variant="outlined"
               fullWidth
               required
+              onChange={(e) => onFormChange(e)}
             />
             <TextField
+              name="password"
               label="Şifre"
               placeholder="Şifre Giriniz..."
               type="password"
               variant="outlined"
               fullWidth
               required
+              onChange={(e) => onFormChange(e)}
             />
-             <Button variant="outlined">Oturum Aç</Button>
+            <Button
+              className="login-button"
+              variant="outlined"
+              onClick={handleLogin}
+            >
+              Oturum Aç
+            </Button>
           </Grid>
           <Grid size={6} className="grid grid-sign-in-right">
             <Box

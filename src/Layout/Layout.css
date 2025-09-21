@@ -1,0 +1,9 @@
+.appbar {
+  background: linear-gradient(
+    63deg,
+    rgba(120, 120, 120, 1) 10%,
+    rgba(143, 143, 143, 1) 50%,
+    rgba(79, 79, 79, 1) 90%,
+    rgba(82, 82, 82, 1) 70%
+  ) !important;
+}
