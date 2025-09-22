@@ -1,3 +1,15 @@
-@import './Login/Login.css';
-@import './Layout/Layout.css'
+@import "./Login/Login.css";
+@import "./Layout/Layout.css";
+@import "./Welcome/Welcome.css";
 
+body {
+  margin: 0px;
+  padding: 0px;
+}
+.grey-button {
+  border-radius: 20px !important;
+  background: #787878 !important;
+  color: white !important;
+  border-color: #787878 !important;
+  text-transform: none !important;
+}

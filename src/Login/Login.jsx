@@ -9,12 +9,14 @@ import {
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import axiosReceptor from "../services/AxiosReceptor";
+import axiosReceptor from "../services/axiosReceptor.js";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import AlertComponent from "../common/AlertComponent.jsx";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
+  const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
   const theme = createTheme({
     typography: {
@@ -33,9 +35,15 @@ const Login = () => {
     },
   });
   const handleLogin = async () => {
-    /*  const response = await axiosReceptor.post("/authenticate", form);
-    localStorage.setItem("accessToken", response.data.token); */
-    navigate("/a");
+    /*  navigate("/welcome"); */
+    try {
+      const response = await axiosReceptor.post("/authenticate", form);
+      localStorage.setItem("accessToken", response.data.token);
+      navigate("/welcome");
+    } catch (err) {
+      //errorkoy
+      return setShowError(true);
+    }
   };
   const onFormChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -66,7 +74,7 @@ const Login = () => {
               onChange={(e) => onFormChange(e)}
             />
             <Button
-              className="login-button"
+              className="grey-button"
               variant="outlined"
               onClick={handleLogin}
             >

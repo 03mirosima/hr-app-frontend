@@ -30,7 +30,7 @@ if so, send a refresh token request to obtain a new access token and
 retry the original request using the updated token.
 Here the refresh token is stored as cookies.
 */
-axiosReceptor.interceptors.response.use(
+/* axiosReceptor.interceptors.response.use(
   function (response) {
     return response;
   },
@@ -70,6 +70,6 @@ axiosReceptor.interceptors.response.use(
 
     return Promise.reject(error);
   }
-);
+); */
 
 export default axiosReceptor;

@@ -15,37 +15,12 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Outlet, useNavigate } from "react-router";
 import { Container } from "@mui/material";
-
-const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
+import MenuComponent from "../Menu/MenuComponent";
 
 export default function Layout(props) {
-  const navigate = useNavigate();
-
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar component="nav" className="appbar">
-        <Toolbar>
-          <Box
-            component="img"
-            sx={{ flexGrow: 1, borderRadius: "50%", maxWidth: 50 }}
-            src="/src/assets/logo.png"
-          />
-
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <Button
-                key={item}
-                sx={{ color: "#fff" }}
-                onClick={() => navigate("/a")}
-              >
-                {item}
-              </Button>
-            ))}
-          </Box>
-        </Toolbar>
-      </AppBar>
-
+      <MenuComponent />
       <Container>
         <Outlet />
       </Container>

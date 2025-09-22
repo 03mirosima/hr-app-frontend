@@ -1,0 +1,9 @@
+.welcome-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 96vh;
+  width: 100%;
+  background-color: #787878 !important;
+}
