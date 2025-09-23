@@ -4,7 +4,10 @@ import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import { useNavigate } from "react-router";
 
-const navItems = ["Çalışan Ekle", "Envanter"];
+const navItems = [
+  { name: "Çalışan Listele", link: "/employeelist" },
+  { name: "Envanter Listele", link: "/employeelist" },
+];
 
 export default function MenuComponent() {
   const navigate = useNavigate();
@@ -23,9 +26,9 @@ export default function MenuComponent() {
             <Button
               key={item}
               sx={{ color: "#fff" }}
-              onClick={() => navigate("/employeeform")}
+              onClick={() => navigate(item.link)}
             >
-              {item}
+              {item.name}
             </Button>
           ))}
         </Box>

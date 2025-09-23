@@ -15,14 +15,21 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 import * as React from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Alert, Container, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Breadcrumbs,
+  Container,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import axiosReceptor from "../services/axiosReceptor";
 import AlertComponent from "../common/AlertComponent";
 
 export default function EmployeeForm() {
+  const location = useLocation();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -48,9 +55,8 @@ export default function EmployeeForm() {
   });
   const [openAlert, setOpenAlert] = useState(false);
   const navigate = useNavigate();
-
   const handleBack = React.useCallback(() => {
-    navigate("/");
+    navigate(-1);
   }, [navigate]);
 
   const onFormChange = (e) => {
@@ -95,16 +101,38 @@ export default function EmployeeForm() {
       .catch((error) => console.log(error));
   }, []);
 
+  useEffect(() => {
+    if (location?.state?.type === "edit") {
+      axiosReceptor
+        .get(`/api/employees/list/${location.state.id}`)
+        .then((res) => {
+          setForm(res?.data);
+        });
+    }
+  }, []);
   const handleSubmit = async () => {
     try {
-      const response = await axiosReceptor.post("/api/employees/save", form);
-
-      setOpenAlert(response.status === 200);
+      if (location?.state?.type === "edit") {
+        const response = await axiosReceptor.put(
+          `api/employees/update/${location?.state?.id}`,
+          form
+        );
+        setOpenAlert(response.status === 200);
+      } else {
+        const response = await axiosReceptor.post("/api/employees/save", form);
+        setOpenAlert(response.status === 200);
+      }
     } catch (err) {}
   };
   return (
     <Container style={{ margin: "100px auto" }}>
-      <Typography variant="h6">Ekle</Typography>
+      <Breadcrumbs>
+        <Typography variant="h6" mb={3}>
+          {location?.state?.type === "edit"
+            ? "Çalışan Güncelle"
+            : "Çalışan Ekle"}
+        </Typography>
+      </Breadcrumbs>
       <Box component="form" autoComplete="off" sx={{ width: "100%" }}>
         <FormGroup>
           <Grid container spacing={2} sx={{ mb: 2, width: "100%" }}>
@@ -114,6 +142,7 @@ export default function EmployeeForm() {
                 label="İsim"
                 fullWidth
                 onChange={(e) => onFormChange(e)}
+                value={form.firstName || ""}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
@@ -122,6 +151,7 @@ export default function EmployeeForm() {
                 label="Soyisim"
                 fullWidth
                 onChange={(e) => onFormChange(e)}
+                value={form.lastName || ""}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
@@ -130,6 +160,7 @@ export default function EmployeeForm() {
                 name="tckn"
                 label="TCKN"
                 fullWidth
+                value={form.tckn || ""}
                 onChange={(e) => onFormChange(e)}
                 sx={{
                   "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
@@ -145,6 +176,8 @@ export default function EmployeeForm() {
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
+                  /*  defaultValue={dayjs(form["birthDate"]).format("YYYY-MM-DD")} */
+                  /*  value={form["birthDate"] || ""} */
                   onChange={(e) => {
                     onFormChange({
                       target: {
@@ -170,8 +203,12 @@ export default function EmployeeForm() {
                   labelId="gender-label"
                   name="gender"
                   label="Cinsiyet"
-                  defaultValue=""
                   fullWidth
+                  value={
+                    options.gender.find((item) => {
+                      return item.name === form.gender;
+                    })?.name || ""
+                  }
                   onChange={(e) => onFormChange(e)}
                 >
                   {options &&
@@ -188,7 +225,11 @@ export default function EmployeeForm() {
                   labelId="maritalStatus-label"
                   name="maritalStatus"
                   label="Medeni Durum"
-                  defaultValue=""
+                  value={
+                    options.maritalStatus.find((item) => {
+                      return item.name === form.maritalStatus;
+                    })?.name || ""
+                  }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
@@ -198,7 +239,7 @@ export default function EmployeeForm() {
                     ))}
                 </Select>
               </FormControl>
-            </Grid>{" "}
+            </Grid>
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
               <FormControl fullWidth>
                 <InputLabel id="graduationStatus-label">Okul Durumu</InputLabel>
@@ -206,7 +247,11 @@ export default function EmployeeForm() {
                   labelId="graduationStatus-label"
                   name="graduationStatus"
                   label="Okul Durumu"
-                  defaultValue=""
+                  value={
+                    options.graduationStatus.find((item) => {
+                      return item.name === form.graduationStatus;
+                    })?.name || ""
+                  }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
@@ -224,7 +269,11 @@ export default function EmployeeForm() {
                   labelId="department-label"
                   name="department"
                   label="Departman"
-                  defaultValue=""
+                  value={
+                    options.department.find((item) => {
+                      return item.name === form.department;
+                    })?.name || ""
+                  }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
@@ -242,7 +291,11 @@ export default function EmployeeForm() {
                   labelId="position-label"
                   name="position"
                   label="Pozisyon"
-                  defaultValue=""
+                  value={
+                    options.position.find((item) => {
+                      return item.name === form.position;
+                    })?.name || ""
+                  }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
@@ -260,7 +313,11 @@ export default function EmployeeForm() {
                   labelId="role-label"
                   name="role"
                   label="Rol"
-                  defaultValue=""
+                  defaultValue={
+                    options.role.find((item) => {
+                      return item.name === form.role;
+                    })?.name || ""
+                  }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
@@ -275,9 +332,21 @@ export default function EmployeeForm() {
               <FormControl>
                 <FormControlLabel
                   name="isActive"
-                  control={<Checkbox size="large" onChange={() => {}} />}
+                  control={
+                    <Checkbox
+                      size="large"
+                      defaultChecked={form.isActive || ""}
+                      onChange={(e) =>
+                        onFormChange({
+                          target: {
+                            name: "isActive",
+                            value: e.target.checked,
+                          },
+                        })
+                      }
+                    />
+                  }
                   label="Aktif mi?"
-                  onChange={(e) => onFormChange(e)}
                 />
               </FormControl>
             </Grid>
@@ -299,13 +368,11 @@ export default function EmployeeForm() {
             variant="outlined"
             onClick={() => handleSubmit()}
           >
-            Kaydet
+            {location?.state?.type === "edit" ? "Güncelle" : "Kaydet"}
           </Button>
         </Stack>
       </Box>
-      {openAlert && (
-        <AlertComponent type={"success"} text={"Kayıt başarılı!"} />
-      )}
+      {openAlert && <AlertComponent type={"success"} text={"Başarılı!"} />}
     </Container>
   );
 }
