@@ -47,8 +47,6 @@ export default function EmployeeForm() {
     department: [],
     gender: [],
     graduationStatus: [],
-    inventoryStatus: [],
-    inventoryType: [],
     maritalStatus: [],
     position: [],
     role: [],
@@ -68,8 +66,6 @@ export default function EmployeeForm() {
       "Department",
       "Gender",
       "GraduationStatus",
-      "InventoryStatus",
-      "InventoryType",
       "MaritalStatus",
       "Position",
       "Role",
@@ -80,8 +76,6 @@ export default function EmployeeForm() {
           department,
           gender,
           graduationStatus,
-          inventoryStatus,
-          inventoryType,
           maritalStatus,
           position,
           role,
@@ -90,8 +84,6 @@ export default function EmployeeForm() {
             department: department.data,
             gender: gender.data,
             graduationStatus: graduationStatus.data,
-            inventoryStatus: inventoryStatus.data,
-            inventoryType: inventoryType.data,
             maritalStatus: maritalStatus.data,
             position: position.data,
             role: role.data,
@@ -335,7 +327,7 @@ export default function EmployeeForm() {
                   control={
                     <Checkbox
                       size="large"
-                      defaultChecked={form.isActive || ""}
+                      checked={form?.isActive}
                       onChange={(e) =>
                         onFormChange({
                           target: {
