@@ -1,9 +1,9 @@
 import { Snackbar } from "@mui/material";
 import Alert from "@mui/material/Alert";
 
-const AlertComponent = ({ type, text, open }) => {
+const AlertComponent = ({ type, text, open, onClose }) => {
   return (
-    <Snackbar open={true} autoHideDuration={10}>
+    <Snackbar open={open} autoHideDuration={1000} onClose={onClose}>
       <Alert severity={type} variant="filled" sx={{ width: "100%" }}>
         {text}
       </Alert>

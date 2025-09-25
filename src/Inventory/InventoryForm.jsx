@@ -24,6 +24,7 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
+import "dayjs/locale/en-gb";
 import { useState, useEffect } from "react";
 import axiosReceptor from "../services/axiosReceptor";
 import AlertComponent from "../common/AlertComponent";
@@ -84,6 +85,7 @@ export default function InventoryForm() {
       } else {
         const response = await axiosReceptor.post("/api/inventory/save", form);
         setOpenAlert(response.status === 200);
+        navigate("/inventorylist");
       }
     } catch (err) {}
   };
@@ -127,13 +129,17 @@ export default function InventoryForm() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="en-gb"
+              >
                 <DatePicker
+                  value={dayjs(form.entryDate)}
                   onChange={(e) => {
                     onFormChange({
                       target: {
                         name: "entryDate",
-                        value: dayjs(e["$d"]).format("YYYY-MM-DD"),
+                        value: dayjs(e["$d"]),
                       },
                     });
                   }}
@@ -213,7 +219,16 @@ export default function InventoryForm() {
           </Button>
         </Stack>
       </Box>
-      {openAlert && <AlertComponent type={"success"} text={"Başarılı!"} />}
+      {openAlert && (
+        <AlertComponent
+          open={openAlert}
+          type={"success"}
+          text={"Başarılı!"}
+          onClose={() => {
+            setOpenAlert(false);
+          }}
+        />
+      )}
     </Container>
   );
 }

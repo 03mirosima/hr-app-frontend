@@ -18,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeletePopUp from "../common/DeletePopUp";
 import AddIcon from "@mui/icons-material/Add";
+import dayjs from "dayjs";
 
 export default function InventoryList() {
   const navigate = useNavigate();
@@ -38,8 +39,8 @@ export default function InventoryList() {
     });
   };
 
-  const deleteEmployee = (id) => {
-    axiosReceptor.delete(`/api/employees/delete/${id}`).then(() => {
+  const deleteInventory = (id) => {
+    axiosReceptor.delete(`/api/inventory/delete/${id}`).then(() => {
       getData();
       setDeletePopup({ show: false, id: "" });
     });
@@ -52,34 +53,25 @@ export default function InventoryList() {
     setDeletePopup({ show: true, id: id });
   };
   const columns = [
-    { field: "firstName", headerName: "Adı", width: 130 },
-    { field: "lastName", headerName: "Soyadı", width: 130 },
-    { field: "graduationStatus", headerName: "Okul Durumu", width: 130 },
+    { field: "serialNumber", headerName: "Seri Numarası", width: 130 },
+    { field: "brand", headerName: "Marka", width: 130 },
+    { field: "model", headerName: "Model", width: 130 },
     {
-      field: "position",
-      headerName: "Pozisyon",
+      field: "entryDate",
+      headerName: "Depoya Giriş Tarihi",
       width: 130,
-      /* valueGetter: (value, row) => row.label || "", */
+      valueGetter: (value, row) =>
+        dayjs(row.entryDate).format("DD.MM.YYYY") || "",
     },
     {
-      field: "department",
-      headerName: "Departman",
+      field: "type",
+      headerName: "Ürün Tipi",
       width: 130,
-      /*   valueGetter: (value, row) => value.label, */
     },
     {
-      field: "maritalStatus",
-      headerName: "Medeni Durum",
+      field: "status",
+      headerName: "Ürün Durumu",
       width: 130,
-      /* valueGetter: (value, row) => value.label, */
-    },
-    {
-      field: "isActive",
-      headerName: "Aktif mi?",
-      width: 130,
-      renderCell: (row) => {
-        return <Checkbox disable checked={row.row.isActive} />;
-      },
     },
     {
       field: "actions",
@@ -165,14 +157,6 @@ export default function InventoryList() {
           >
             Geri
           </Button>
-          <Button
-            type="button"
-            className="grey-button"
-            variant="outlined"
-            onClick={() => handleSubmit()}
-          >
-            Kaydet
-          </Button>
         </Stack>
       </Box>
       {deletePopup.show && (
@@ -181,7 +165,7 @@ export default function InventoryList() {
           handleClose={() => {
             setDeletePopup({ show: false, id: "" });
           }}
-          handleDelete={() => deleteEmployee(deletePopup.id)}
+          handleDelete={() => deleteInventory(deletePopup.id)}
         />
       )}
     </Container>

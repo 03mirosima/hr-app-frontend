@@ -7,7 +7,8 @@ import { useNavigate } from "react-router";
 const navItems = [
   { name: "Çalışan Listele", link: "/employeelist" },
   { name: "Envanter Listele", link: "/inventorylist" },
-  { name: "Zimmetleme", link: "/assignmentform" },
+  { name: "Zimmetleme", link: "/assignmentlist" },
+  { name: "Zimmeti Teslim Al", link: "/assignmentform" },
 ];
 
 export default function MenuComponent() {

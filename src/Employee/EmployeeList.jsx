@@ -165,14 +165,6 @@ export default function EmployeeList() {
           >
             Geri
           </Button>
-          <Button
-            type="button"
-            className="grey-button"
-            variant="outlined"
-            onClick={() => handleSubmit()}
-          >
-            Kaydet
-          </Button>
         </Stack>
       </Box>
       {deletePopup.show && (

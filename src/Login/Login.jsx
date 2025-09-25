@@ -16,7 +16,11 @@ import AlertComponent from "../common/AlertComponent.jsx";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
   const navigate = useNavigate();
   const theme = createTheme({
     typography: {
@@ -40,9 +44,17 @@ const Login = () => {
       const response = await axiosReceptor.post("/authenticate", form);
       localStorage.setItem("accessToken", response.data.token);
       navigate("/welcome");
+      setShowError({
+        show: true,
+        message: "Giriş Yapıldı",
+        type: "success",
+      });
     } catch (err) {
-      //errorkoy
-      return setShowError(true);
+      return setShowError({
+        show: true,
+        message: Object.values(err?.response?.data?.errors).flat()?.join(),
+        type: "error",
+      });
     }
   };
   const onFormChange = (e) => {
@@ -74,6 +86,7 @@ const Login = () => {
               onChange={(e) => onFormChange(e)}
             />
             <Button
+              type="submit"
               className="grey-button"
               variant="outlined"
               onClick={handleLogin}
@@ -97,6 +110,16 @@ const Login = () => {
           </Grid>
         </Paper>
       </Container>
+      {showError.show && (
+        <AlertComponent
+          open={showError.show}
+          type={showError.type}
+          text={showError.message}
+          onClose={() => {
+            setShowError({ show: false, message: "", type: "" });
+          }}
+        />
+      )}
     </ThemeProvider>
   );
 };

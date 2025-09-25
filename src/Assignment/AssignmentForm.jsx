@@ -1,32 +1,19 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Breadcrumbs, Container, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import dayjs from "dayjs";
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import {
-  Alert,
-  Breadcrumbs,
-  Container,
-  Snackbar,
-  Typography,
-} from "@mui/material";
-import { useState, useEffect } from "react";
-import axiosReceptor from "../services/axiosReceptor";
 import AlertComponent from "../common/AlertComponent";
+import axiosReceptor from "../services/axiosReceptor";
 
 export default function AssignmentForm() {
   const location = useLocation();
@@ -92,12 +79,7 @@ export default function AssignmentForm() {
       }
     } catch (err) {}
   };
-  console.log(
-    options.employeeList?.find((item) => {
-      return item.id === form.employeeId;
-    })?.firstName,
-    "ldd"
-  );
+
   return (
     <Container style={{ margin: "100px auto" }}>
       <Breadcrumbs>
@@ -136,6 +118,7 @@ export default function AssignmentForm() {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
               <FormControl fullWidth>
                 <InputLabel id="inventoryId-label">Envanter</InputLabel>
@@ -145,15 +128,17 @@ export default function AssignmentForm() {
                   label="Envanter"
                   value={
                     options.inventoryList.find((item) => {
-                      return item.name === form.inventoryId;
-                    })?.name || ""
+                      return item.id === form.inventoryId;
+                    })?.id || ""
                   }
                   fullWidth
                   onChange={(e) => onFormChange(e)}
                 >
                   {options &&
                     options.inventoryList.map((item_) => (
-                      <MenuItem value={item_.name}>{item_.label}</MenuItem>
+                      <MenuItem value={item_.id}>
+                        {item_.serialNumber}-{item_.brand}-{item_.model}
+                      </MenuItem>
                     ))}
                 </Select>
               </FormControl>

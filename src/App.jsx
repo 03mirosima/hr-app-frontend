@@ -8,6 +8,7 @@ import EmployeeList from "./Employee/EmployeeList";
 import InventoryList from "./Inventory/InventoryList";
 import InventoryForm from "./Inventory/InventoryForm";
 import AssignmentForm from "./Assignment/AssignmentForm";
+import AssignmentList from "./Assignment/AssignmentList";
 function App() {
   return (
     <Router>
@@ -21,6 +22,7 @@ function App() {
           <Route path="employeeform" element={<EmployeeForm />} />
           <Route path="inventorylist" element={<InventoryList />} />
           <Route path="inventoryform" element={<InventoryForm />} />
+          <Route path="assignmentlist" element={<AssignmentList />} />
           <Route path="assignmentform" element={<AssignmentForm />} />
         </Route>
       </Routes>

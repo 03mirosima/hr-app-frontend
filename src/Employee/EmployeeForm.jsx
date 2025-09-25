@@ -1,32 +1,27 @@
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Breadcrumbs, Container, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import dayjs from "dayjs";
-import * as React from "react";
-import { useLocation, useNavigate } from "react-router";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import {
-  Alert,
-  Breadcrumbs,
-  Container,
-  Snackbar,
-  Typography,
-} from "@mui/material";
-import { useState, useEffect } from "react";
-import axiosReceptor from "../services/axiosReceptor";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
+import "dayjs/locale/en-gb";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import AlertComponent from "../common/AlertComponent";
+import axiosReceptor from "../services/axiosReceptor";
 
 export default function EmployeeForm() {
   const location = useLocation();
@@ -51,7 +46,11 @@ export default function EmployeeForm() {
     position: [],
     role: [],
   });
-  const [openAlert, setOpenAlert] = useState(false);
+  const [showError, setShowError] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
   const navigate = useNavigate();
   const handleBack = React.useCallback(() => {
     navigate(-1);
@@ -90,7 +89,13 @@ export default function EmployeeForm() {
           });
         }
       )
-      .catch((error) => console.log(error));
+      .catch((err) =>
+        setShowError({
+          show: true,
+          message: Object.values(err?.response?.data?.errors).flat()?.join(),
+          type: "error",
+        })
+      );
   }, []);
 
   useEffect(() => {
@@ -109,12 +114,41 @@ export default function EmployeeForm() {
           `api/employees/update/${location?.state?.id}`,
           form
         );
-        setOpenAlert(response.status === 200);
+        setShowError({
+          show: true,
+          message: "Başarılı",
+          type: "success",
+        });
+        setTimeout(() => {
+          setShowError({
+            show: false,
+            message: "",
+            type: "",
+          });
+        }, 1000);
       } else {
         const response = await axiosReceptor.post("/api/employees/save", form);
-        setOpenAlert(response.status === 200);
+        setShowError({
+          show: true,
+          message: "Başarılı",
+          type: "success",
+        });
+        setTimeout(() => {
+          setShowError({
+            show: false,
+            message: "",
+            type: "",
+          });
+          navigate("/employeelist");
+        }, 500);
       }
-    } catch (err) {}
+    } catch (err) {
+      return setShowError({
+        show: true,
+        message: Object.values(err?.response?.data?.errors).flat()?.join(),
+        type: "error",
+      });
+    }
   };
   return (
     <Container style={{ margin: "100px auto" }}>
@@ -166,15 +200,17 @@ export default function EmployeeForm() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }} sx={{ display: "flex" }}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="en-gb"
+              >
                 <DatePicker
-                  /*  defaultValue={dayjs(form["birthDate"]).format("YYYY-MM-DD")} */
-                  /*  value={form["birthDate"] || ""} */
+                  value={dayjs(form.birthDate)}
                   onChange={(e) => {
                     onFormChange({
                       target: {
                         name: "birthDate",
-                        value: dayjs(e["$d"]).format("YYYY-MM-DD"),
+                        value: dayjs(e["$d"]),
                       },
                     });
                   }}
@@ -305,7 +341,7 @@ export default function EmployeeForm() {
                   labelId="role-label"
                   name="role"
                   label="Rol"
-                  defaultValue={
+                  value={
                     options.role.find((item) => {
                       return item.name === form.role;
                     })?.name || ""
@@ -364,7 +400,16 @@ export default function EmployeeForm() {
           </Button>
         </Stack>
       </Box>
-      {openAlert && <AlertComponent type={"success"} text={"Başarılı!"} />}
+      {showError.show && (
+        <AlertComponent
+          open={showError.show}
+          type={showError.type}
+          text={showError.message}
+          onClose={() => {
+            setShowError({ show: false, message: "", type: "" });
+          }}
+        />
+      )}
     </Container>
   );
 }

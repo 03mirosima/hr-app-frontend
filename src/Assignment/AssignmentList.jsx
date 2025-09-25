@@ -19,10 +19,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DeletePopUp from "../common/DeletePopUp";
 import AddIcon from "@mui/icons-material/Add";
 
-export default function EmployeeList() {
+export default function AssignmentList() {
   const navigate = useNavigate();
   const [rows, setRows] = useState(undefined);
-  const [deletePopup, setDeletePopup] = useState({ show: false, id: "" });
 
   const handleBack = useCallback(() => {
     navigate(-1);
@@ -38,19 +37,10 @@ export default function EmployeeList() {
     });
   };
 
-  const deleteEmployee = (id) => {
-    axiosReceptor.delete(`/api/employees/delete/${id}`).then(() => {
-      getData();
-      setDeletePopup({ show: false, id: "" });
-    });
-  };
-
   const handleEditClick = (id) => {
     navigate(`/employeeform`, { state: { id: id, type: "edit" } });
   };
-  const handleDeleteClick = (id) => {
-    setDeletePopup({ show: true, id: id });
-  };
+
   const columns = [
     { field: "firstName", headerName: "Adı", width: 130 },
     { field: "lastName", headerName: "Soyadı", width: 130 },
@@ -59,19 +49,16 @@ export default function EmployeeList() {
       field: "position",
       headerName: "Pozisyon",
       width: 130,
-      /* valueGetter: (value, row) => row.label || "", */
     },
     {
       field: "department",
       headerName: "Departman",
       width: 130,
-      /*   valueGetter: (value, row) => value.label, */
     },
     {
       field: "maritalStatus",
       headerName: "Medeni Durum",
       width: 130,
-      /* valueGetter: (value, row) => value.label, */
     },
     {
       field: "isActive",
@@ -96,12 +83,6 @@ export default function EmployeeList() {
             onClick={() => handleEditClick(id)}
             color="inherit"
           />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={() => handleDeleteClick(id)}
-            color="inherit"
-          />,
         ];
       },
     },
@@ -119,7 +100,7 @@ export default function EmployeeList() {
       >
         <Breadcrumbs>
           <Typography variant="h6" mb={3}>
-            Çalışan Listesi
+            Zimmet Listeleme
           </Typography>
         </Breadcrumbs>
         <Button
@@ -127,10 +108,10 @@ export default function EmployeeList() {
           variant="outlined"
           startIcon={<AddIcon />}
           onClick={() => {
-            navigate("/employeeform");
+            navigate("/assignmentform");
           }}
         >
-          Çalışan Ekle
+          Zimmetleme
         </Button>
       </Box>
       <Box sx={{ width: "100%" }}>
@@ -175,15 +156,6 @@ export default function EmployeeList() {
           </Button>
         </Stack>
       </Box>
-      {deletePopup.show && (
-        <DeletePopUp
-          open={deletePopup.show}
-          handleClose={() => {
-            setDeletePopup({ show: false, id: "" });
-          }}
-          handleDelete={() => deleteEmployee(deletePopup.id)}
-        />
-      )}
     </Container>
   );
 }
